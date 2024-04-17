@@ -32,3 +32,49 @@ int main( void ){
 		printf("Error: Binding failed\n");
 		exit(1);
 	}
+	
+	//listening for connection
+	int wait_size = 16;
+
+	if(listen(lis_soc_fd, wait_size) < 0){
+
+		printf("Error: listening failed");
+		exit(1);
+	}
+
+	//handle queued clients iteratively
+	while(1){
+		
+		//client details buffer
+		struct sockaddr_in rem_soc_addr;
+		int rem_soc_addr_len;
+		
+		//create a serving socket
+		int soc_fd;
+		if(soc_fd = accept( lis_soc_fd, &rem_soc_addr, &rem_soc_addr_len) < 0){
+
+			printf("Error: socket creation failed");
+			exit(1);
+		}
+
+		//data buffer
+		char buffer[256];
+		char* ptr = buffer; //next write ptr
+		int max_len = sizeof(buffer); //max write ptr
+		int len;
+
+		//Data transfer
+		int n;
+		while( (n = recv(soc_fd, ptr, max_len, 0)) > 0 ){
+
+				ptr += n;
+				max_len -= n;
+				len +=n;
+		}
+
+		//send data
+		send( soc_fd, buffer, len, 0);
+
+		close(soc_fd);
+	}
+}
