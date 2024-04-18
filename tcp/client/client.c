@@ -23,12 +23,12 @@ int main( int argc, char* argv[]){
 	struct sockaddr_in rem_soc_addr;
 	memset(&rem_soc_addr, sizeof(rem_soc_addr), 0);
 	rem_soc_addr.sin_family = AF_INET;
-	rem_soc_addr.sin_addr.s_addr = htonl( atoi(argv[1]) );
+	inet_pton(AF_INET, argv[1], &rem_soc_addr.sin_addr);	
 	rem_soc_addr.sin_port = htons(PORT);
 
 	//create a socket
 	int soc_fd;
-	if( soc_fd= socket(PF_INET, SOCK_STREAM, 0) < 0){
+	if( (soc_fd=socket(PF_INET, SOCK_STREAM, 0)) < 0){
 
 		printf("Error: socket creation failed\n");
 		exit(1);

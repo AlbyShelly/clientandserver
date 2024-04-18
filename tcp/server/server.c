@@ -32,13 +32,16 @@ int main( void ){
 		printf("Error: Binding failed\n");
 		exit(1);
 	}
+
+	//print list_soc_fd
+	printf("lis_soc_fd: %i\n",lis_soc_fd);
 	
 	//listening for connection
 	int wait_size = 16;
 
-	if(listen(lis_soc_fd, wait_size) < 0){
+	if(listen( lis_soc_fd, wait_size) < 0){
 
-		printf("Error: listening failed");
+		printf("Error: listening failed\n");
 		exit(1);
 	}
 
@@ -47,19 +50,20 @@ int main( void ){
 		
 		//client details buffer
 		struct sockaddr_in rem_soc_addr;
-		int rem_soc_addr_len;
+		int rem_soc_addr_len = 0;
 		
 		//create a serving socket
 		int soc_fd;
-		if(soc_fd = accept( lis_soc_fd, &rem_soc_addr, &rem_soc_addr_len) < 0){
-
-			printf("Error: socket creation failed");
+		if( (soc_fd = accept( lis_soc_fd, &rem_soc_addr, &rem_soc_addr_len)) < 0){
+			
+			printf("%i \n",soc_fd);
+			printf("Error: socket creation failed\n");
 			exit(1);
 		}
 
-		//data buffer
+		/* //data buffer
 		char buffer[256];
-		char* ptr = buffer; //next write ptr
+		char *ptr = buffer; //next write ptr
 		int max_len = sizeof(buffer); //max write ptr
 		int len;
 
@@ -70,7 +74,13 @@ int main( void ){
 				ptr += n;
 				max_len -= n;
 				len +=n;
-		}
+		}*/
+
+		//get data
+		char buffer[256];
+		int len = recv(soc_fd, buffer, 256, 0);
+		printf(" %i bytes recovered\n", len); 
+
 
 		//send data
 		send( soc_fd, buffer, len, 0);
